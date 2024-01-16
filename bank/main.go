@@ -1,15 +1,14 @@
 package main
 
 import (
+	"bank/fileOps"
 	"fmt"
-	"os"
-	"strconv"
+	"github.com/Pallinder/go-randomdata"
 )
 
-// value in cents
-var accountBalance int64 = getBalanceFromFile()
-
 const accountBalanceFile string = "balance.txt"
+
+var accountBalance = fileOps.GetFloatFromFile(accountBalanceFile)
 
 func main() {
 	welcomeMessage()
@@ -17,19 +16,9 @@ func main() {
 }
 
 func welcomeMessage() {
+	fmt.Println("Hi", randomdata.FullName(randomdata.RandomGender))
 	fmt.Println("Welcome to Go Bank!")
-}
-
-func choicesMessage() {
-	fmt.Println("What do you want to do today?")
-	fmt.Println("1. Check Balance")
-	fmt.Println("2. Deposit")
-	fmt.Println("3. Withdraw")
-	fmt.Println("4. Exit")
-
-	var choice int
-	choice = getChoice()
-	performChoiceAction(choice)
+	fmt.Println("You can reach us 24/7 at", randomdata.PhoneNumber())
 }
 
 func getChoice() int {
@@ -74,7 +63,7 @@ func withdraw() {
 		withdraw()
 	}
 	accountBalance -= withdrawInCents
-	writeBalanceToFile(accountBalance)
+	fileOps.WriteFloatToFile(accountBalanceFile, accountBalance)
 	checkBalance()
 }
 
@@ -88,7 +77,7 @@ func deposit() {
 	}
 	depositInCents := dollarToCents(depositAmount)
 	accountBalance += depositInCents
-	writeBalanceToFile(accountBalance)
+	fileOps.WriteFloatToFile(accountBalanceFile, accountBalance)
 	checkBalance()
 }
 
@@ -103,26 +92,4 @@ func dollarToCents(dollar float64) int64 {
 
 func centsToDollar(cents int64) float64 {
 	return float64(cents) / 100
-}
-
-func writeBalanceToFile(balance int64) {
-	balanceText := fmt.Sprint(balance)
-	err := os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
-	if err != nil {
-		return
-	}
-}
-
-func getBalanceFromFile() int64 {
-	data, err := os.ReadFile(accountBalanceFile)
-	if err != nil {
-		return 0
-	}
-	balanceText := string(data)
-	balance, convError := strconv.ParseInt(balanceText, 64, 10)
-	if convError != nil {
-		return 0
-	}
-
-	return balance
 }

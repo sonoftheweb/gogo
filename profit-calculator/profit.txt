@@ -1,6 +1,0 @@
-Revenue: 3000.00
-Expenses: 100.00
-Tax Rate: 3.40
-Earnings Before Tax: 2900.00
-Earnings After Tax: 2899.03
-Ratio of Earnings Before Tax to Earnings After Tax: 1.00
